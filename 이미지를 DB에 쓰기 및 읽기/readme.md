@@ -21,7 +21,7 @@ TINYBLOB 은 255Bytes / BLOB 은 64KB / MEDIUMBLOB 은 16MB / LONGBLOB 은 4GB �
 ```python
 import pymysql.cursors
 
-connection = pymysql.connect(host='i4d109.p.ssafy.io',port=3306,user="user",password="pwd",db="A", cursorclass=pymysql.cursors.DictCursor)
+connection = pymysql.connect(host='127.0.0.1',port=3306,user="user",password="pwd",db="Image", cursorclass=pymysql.cursors.DictCursor)
 
 with connection.cursor() as cursor:
 
