@@ -14,7 +14,7 @@ CREATE TABLE test(Id INT PROMARY KEY AUTO_INCREMENT, Data MEDIUMBLOB);
 ```
 
 BLOB 타입은 indexing을 할 수 없으므로 indexing을 하려면 별도의 column이 존재해야 한다.    
-TINYBLOB 은 255Bytes / 
+TINYBLOB 은 255Bytes / BLOB 은 64KB / MEDIUMBLOB 은 16MB / LONGBLOB 은 4GB 까지의 이미지를 저장할 수 있다. 
 
 #### DB에 이미지 쓰기       
 
