@@ -10,37 +10,68 @@ base64 encoding을 하게 되면 전송해야 될 데이터의 양이 약 33% �
 이미지를 DB에 저장할 때는 BLOB 타입으로 저장한다.    
 
 ```MySQL
-CREATE TABLE test(Id INT PROMARY KEY AUTO_INCREMENT, Data MEDIUMBLOB);
+CREATE TABLE test(Id INT PROMARY KEY AUTO_INCREMENT, Data MEDIUMBLOB, Type VARCHAR(50));
 ```
 
 BLOB 타입은 indexing을 할 수 없으므로 indexing을 하려면 별도의 column이 존재해야 한다.    
 TINYBLOB 은 255Bytes / BLOB 은 64KB / MEDIUMBLOB 은 16MB / LONGBLOB 은 4GB 까지의 이미지를 저장할 수 있다. 
 
-#### DB에 이미지 쓰기       
+***
 
-```python
+#### 로컬 이미지 DB에 저장하기
+
+```MySQL
 import pymysql.cursors
+import base64
+import pathlib
+
+connection = pymysql.connect(host='127.0.0.1',port=3306,user="user",password="pwd",db="Image", cursorclass=pymysql.cursors.DictCursor)
+
+with connection.cursor() as cursor:
+	filepath = '/image.png'
+	path = pathlib.Path(filepath)
+	
+	with open(filepath, 'rb') as img :
+		base64_string = base64.b64encode(img.read())
+	
+		sql = "INSERT INTO test(Data, Type) VALUES($s, %s)
+		values = (base64_string, path.suffix)
+		
+		cursor.execute(sql, values)
+		connection.commit()
+
+connection.close()
+```
+
+***
+
+#### DB에 있는 이미지 로컬에 저장하기       
+
+```MySQL
+import pymysql.cursors
+import base64
+from PIL import Image
+from io image BytesIO
 
 connection = pymysql.connect(host='127.0.0.1',port=3306,user="user",password="pwd",db="Image", cursorclass=pymysql.cursors.DictCursor)
 
 with connection.cursor() as cursor:
 
-	# image 테이블 전체 조회
+	# test 테이블 전체 조회
 	sql = "SELECT * FROM images"
 	cursor.execute(sql)
 	results = cursor.fetchall()
     
-	# image 테이블에 추가
-	sql = "INSERT INTO images VALUES (%s,%s,%s)"
-	values = ((값 1),(값 2),(값 3))
-	cursor.execute(sql, values)
-	connection.commit()
-    
-	# image 테이블 수정
-	sql = "UPDATE images SET state = 'T' WHERE id = %s"
-	values = ((값 1))
-	cursor.execute(sql, values)
-	connection.commit()
-    
+	for result in results:
+		filename = "save%d" % result['Id']
+		img = Image.open(BytesIO(base64.b64decode(result['Data'])))
+		if(result['Type'] == 'png'):
+			img.save(filename+".png")
+			
+			# 만약 png 파일을 jpg로 저장하고 싶다면?
+			# img = img.convert("RGB")
+			# img.save(filename+".jpg")
+    		else:
+			img.save(filename+".jpg")
 connection.close()
 ```
