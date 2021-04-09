@@ -34,7 +34,7 @@ with connection.cursor() as cursor:
 	with open(filepath, 'rb') as img :
 		base64_string = base64.b64encode(img.read())
 	
-		sql = "INSERT INTO test(Data, Type) VALUES($s, %s)"
+		sql = "INSERT INTO test(Data, Type) VALUES(%s, %s)"
 		values = (base64_string, path.suffix)
 		
 		cursor.execute(sql, values)
