@@ -1,3 +1,13 @@
+#### 설치모듈
+
+Anaconda Prompt로 아래 명령어를 통해 해당 모듈을 먼저 설치해야 한다.
+
+```
+pip install schedule
+```
+
+***
+
 #### 코드
 
 ```Python
